@@ -33,11 +33,19 @@ export function SelectBetweenBrackets(options: SelectionOptions) {
   if (nextBracketMatches.length !== prevBracketMatches.length) return;
   if (nextBracketMatches.length === 0) return;
   if (prevBracketMatches.length === 0) return;
-  const lastNextMatch = nextBracketMatches[nextBracketMatches.length - 1];
-  const lastPrevMatch = prevBracketMatches[prevBracketMatches.length - 1];
-  if (lastNextMatch.bracket.close !== lastPrevMatch.bracket.close) return;
-  const nextPos = document.positionAt(lastNextMatch.index - 1);
-  const prevPos = document.positionAt(lastPrevMatch.index + 1);
+  let firstNextMatch = null;
+  let firstPrevMatch = null;
+  for (let i = 0; i < nextBracketMatches.length; i++) {
+    if (nextBracketMatches[i].bracket.close === prevBracketMatches[i].bracket.close)
+    {
+        firstNextMatch = nextBracketMatches[i];
+        firstPrevMatch = prevBracketMatches[i];
+        break;
+    } 
+  }
+  if (firstNextMatch === null || firstPrevMatch === null) return;
+  const nextPos = document.positionAt(firstNextMatch.index - 1);
+  const prevPos = document.positionAt(firstPrevMatch.index + 1);
   editor.selection = new vscode.Selection(prevPos, nextPos);
   const selectedText = document.getText(editor.selection);
   if (options.copy === true || options.cut === true) {
