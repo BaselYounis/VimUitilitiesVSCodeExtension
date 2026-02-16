@@ -1,7 +1,6 @@
 import {
   Bracket as char,
   BRACKET_OPENINGS,
-  BRACKETS,
   BRACKET_CLOSINGS,
   isValidBracketPair,
 } from "../helpers/brackets";
@@ -26,7 +25,6 @@ export function SelectBetweenBrackets(options: SelectionOptions) {
   if (!cursorPair) return;
   const openBracket = cursorPair[0];
   const closeBracket = cursorPair[1];
-  if (!closeBracket) return;
   const prevPos = document.positionAt(openBracket.index + 1);
   const nextPos = document.positionAt(closeBracket.index);
   editor.selection = new vscode.Selection(prevPos, nextPos);
@@ -69,11 +67,12 @@ function findMatchingPairInBracketsMatches(bracketMatches: BracketMatch[]) {
           inCompleteMatch[1] === false
         ) {
           currInCompleteMatch = inCompleteMatch;
-          inCompleteMatch[1] = true;
         }
       }
-      if (currInCompleteMatch)
+      if (currInCompleteMatch) {
+        currInCompleteMatch[1] = true;
         completeMatches.push([currInCompleteMatch[0], match]);
+      }
     }
   });
 
@@ -92,12 +91,10 @@ function findCursorPair(
   return null;
 }
 
-function parsePairs(
-  matchingPairs: [BracketMatch, BracketMatch, number, number][],
-) {
+function parsePairs(matchingPairs: [BracketMatch, BracketMatch][]) {
   let s = "";
   matchingPairs.forEach((pair) => {
-    s += `${pair[0].bracket} ${pair[1]?.bracket} Open Idx:${pair[2]} Close Idx${pair[3]}`;
+    s += `${pair[0].bracket} ${pair[1]?.bracket}`;
   });
   return s;
 }
