@@ -4,7 +4,7 @@ import * as vscode from "vscode";
 import { Command } from "./constants/command-type";
 import { MoveToNextOpenBracket } from "./commands/MoveToNextOpenBracket";
 import { SelectBetweenBrackets } from "./commands/SelectBetweenBrackets";
-import { DeleteBetweenBrackets } from "./commands/DeleteBetweenBrackets";
+import { MoveToNextClosedBracket } from "./commands/MoveToNextClosedBracket";
 
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
@@ -13,16 +13,20 @@ export function activate(context: vscode.ExtensionContext) {
   const commands: Command[] = [
     {
       id: "baselcustomkeybinds.moveToNextOpenBracket",
-      handler:MoveToNextOpenBracket ,
+      handler: MoveToNextOpenBracket,
+    },
+    {
+      id: "baselcustomkeybinds.moveToNextClosedBracket",
+      handler: MoveToNextClosedBracket,
     },
     {
       id: "baselcustomkeybinds.selectBetweenBrackets",
-      handler:SelectBetweenBrackets ,
+      handler: SelectBetweenBrackets,
     },
     {
       id: "baselcustomkeybinds.deleteBetweenBrackets",
-		handler:DeleteBetweenBrackets ,
-	},
+      handler: ()=>SelectBetweenBrackets(true),
+    },
   ];
 
   commands.forEach((element) => {
