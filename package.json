@@ -14,8 +14,16 @@
   "contributes": {
     "commands": [
       {
-        "command": "basel-custom-keybinds.helloWorld",
-        "title": "Hello World"
+        "command": "baselcustomkeybinds.moveToNextOpenBracket",
+        "title": "Move To Next Open Bracket"
+      },
+      {
+        "command": "baselcustomkeybinds.selectBetweenBrackets",
+        "title": "Select Between Brackets"
+      },
+      {
+        "command": "baselcustomkeybinds.deleteBetweenBrackets",
+        "title": "Delete Between Brackets"
       }
     ]
   },
