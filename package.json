@@ -18,6 +18,10 @@
         "title": "Move To Next Open Bracket"
       },
       {
+        "command": "baselcustomkeybinds.moveToPrevOpenBracket",
+        "title": "Move To Previous Open Bracket"
+      },
+      {
         "command": "baselcustomkeybinds.moveToNextClosedBracket",
         "title": "Move To Next Closed Bracket"
       },

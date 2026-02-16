@@ -5,6 +5,7 @@ import { Command } from "./constants/command-type";
 import { MoveToNextOpenBracket } from "./commands/MoveToNextOpenBracket";
 import { SelectBetweenBrackets } from "./commands/SelectBetweenBrackets";
 import { MoveToNextClosedBracket } from "./commands/MoveToNextClosedBracket";
+import { MoveToPrevOpenBracket } from "./commands/MoveToPrevOpenBracket";
 
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
@@ -14,6 +15,10 @@ export function activate(context: vscode.ExtensionContext) {
     {
       id: "baselcustomkeybinds.moveToNextOpenBracket",
       handler: MoveToNextOpenBracket,
+    },
+    {
+      id: "baselcustomkeybinds.moveToPrevOpenBracket",
+      handler: MoveToPrevOpenBracket,
     },
     {
       id: "baselcustomkeybinds.moveToNextClosedBracket",
