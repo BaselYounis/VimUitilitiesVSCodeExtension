@@ -1,4 +1,4 @@
-import { brackets } from "../helpers/brackets";
+import { BRACKETS } from "../helpers/brackets";
 import { log } from "../helpers/log";
 import * as vscode from "vscode";
 import { MoveToNextClosedBracket } from "./MoveToNextClosedBracket";
@@ -13,7 +13,7 @@ export function MoveToNextOpenBracket() {
     ),
   );
   let nearestBracketIndex = Number.MAX_SAFE_INTEGER;
-  for (const bracket of brackets) {
+  for (const bracket of BRACKETS) {
     const bracketIndex = text.indexOf(bracket.open);
     if (bracketIndex === -1) continue;
     if (bracketIndex < nearestBracketIndex) nearestBracketIndex = bracketIndex;

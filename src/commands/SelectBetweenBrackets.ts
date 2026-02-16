@@ -1,7 +1,12 @@
-import { Bracket, brackets } from "../helpers/brackets";
-import { log } from "../helpers/log";
+import {
+  Bracket as char,
+  BRACKET_OPENINGS,
+  BRACKETS,
+  BRACKET_CLOSINGS,
+  isValidBracketPair,
+} from "../helpers/brackets";
 import * as vscode from "vscode";
-type BracketMatch = { bracket: Bracket; index: number };
+type BracketMatch = { bracket: string; index: number };
 type SelectionOptions = {
   delete?: boolean;
   cut?: boolean;
@@ -14,38 +19,16 @@ export function SelectBetweenBrackets(options: SelectionOptions) {
   const document = editor.document;
   const cursorOffset = document.offsetAt(cursorPosition);
   const text = document.getText();
-  const prevBracketMatches: BracketMatch[] = [];
-  const nextBracketMatches: BracketMatch[] = [];
-  for (const bracket of brackets) {
-    for (let i = cursorOffset - 1; i >= 0; i--) {
-      if (text[i] === bracket.close) break;
-      if (text[i] === bracket.open)
-        prevBracketMatches.push({ bracket: bracket, index: i });
-    }
-  }
-  for (const bracket of brackets) {
-    for (let i = cursorOffset + 1; i < text.length; i++) {
-      if (text[i] === bracket.open) break;
-      if (text[i] === bracket.close)
-        nextBracketMatches.push({ bracket: bracket, index: i });
-    }
-  }
-  if (nextBracketMatches.length !== prevBracketMatches.length) return;
-  if (nextBracketMatches.length === 0) return;
-  if (prevBracketMatches.length === 0) return;
-  let firstNextMatch = null;
-  let firstPrevMatch = null;
-  for (let i = 0; i < nextBracketMatches.length; i++) {
-    if (nextBracketMatches[i].bracket.close === prevBracketMatches[i].bracket.close)
-    {
-        firstNextMatch = nextBracketMatches[i];
-        firstPrevMatch = prevBracketMatches[i];
-        break;
-    } 
-  }
-  if (firstNextMatch === null || firstPrevMatch === null) return;
-  const nextPos = document.positionAt(firstNextMatch.index - 1);
-  const prevPos = document.positionAt(firstPrevMatch.index + 1);
+  const bracketMatches = getBracketMatchesFromText(text);
+  const matchingPairs = findMatchingPairInBracketsMatches(bracketMatches);
+  if (!matchingPairs) return;
+  const cursorPair = findCursorPair(matchingPairs, cursorOffset);
+  if (!cursorPair) return;
+  const openBracket = cursorPair[0];
+  const closeBracket = cursorPair[1];
+  if (!closeBracket) return;
+  const prevPos = document.positionAt(openBracket.index + 1);
+  const nextPos = document.positionAt(closeBracket.index);
   editor.selection = new vscode.Selection(prevPos, nextPos);
   const selectedText = document.getText(editor.selection);
   if (options.copy === true || options.cut === true) {
@@ -55,4 +38,66 @@ export function SelectBetweenBrackets(options: SelectionOptions) {
     editor.edit((editBuilder) => {
       editBuilder.delete(editor.selection);
     });
+}
+
+function getBracketMatchesFromText(text: string) {
+  const bracketMatches: BracketMatch[] = [];
+  for (let idx = 0; idx < text.length; idx++) {
+    const char = text[idx];
+    if (BRACKET_CLOSINGS.includes(char) || BRACKET_OPENINGS.includes(char))
+      bracketMatches.push({ bracket: char, index: idx });
+  }
+  return bracketMatches;
+}
+
+function findMatchingPairInBracketsMatches(bracketMatches: BracketMatch[]) {
+  const completeMatches: [BracketMatch, BracketMatch][] = [];
+  const inCompleteMatches: [BracketMatch, boolean][] = [];
+
+  bracketMatches.forEach((match, index) => {
+    if (BRACKET_OPENINGS.includes(match.bracket)) {
+      inCompleteMatches.push([match, false]);
+    }
+    if (
+      BRACKET_CLOSINGS.includes(match.bracket) &&
+      inCompleteMatches.length !== 0
+    ) {
+      let currInCompleteMatch = null;
+      for (const inCompleteMatch of inCompleteMatches) {
+        if (
+          isValidBracketPair(inCompleteMatch[0].bracket, match.bracket) &&
+          inCompleteMatch[1] === false
+        ) {
+          currInCompleteMatch = inCompleteMatch;
+          inCompleteMatch[1] = true;
+        }
+      }
+      if (currInCompleteMatch)
+        completeMatches.push([currInCompleteMatch[0], match]);
+    }
+  });
+
+  if (completeMatches.length === 0) return null;
+  return completeMatches;
+}
+
+function findCursorPair(
+  completeMatches: [BracketMatch, BracketMatch][],
+  cursorOffset: number,
+) {
+  for (const match of completeMatches) {
+    if (match[0].index < cursorOffset && match[1].index > cursorOffset)
+      return match;
+  }
+  return null;
+}
+
+function parsePairs(
+  matchingPairs: [BracketMatch, BracketMatch, number, number][],
+) {
+  let s = "";
+  matchingPairs.forEach((pair) => {
+    s += `${pair[0].bracket} ${pair[1]?.bracket} Open Idx:${pair[2]} Close Idx${pair[3]}`;
+  });
+  return s;
 }

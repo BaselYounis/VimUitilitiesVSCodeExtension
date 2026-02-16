@@ -1,5 +1,5 @@
 import * as vscode from "vscode";
-import { brackets } from "../helpers/brackets";
+import { BRACKETS } from "../helpers/brackets";
 export function MoveToNextClosedBracket() {
   const editor = vscode.window.activeTextEditor;
   if (!editor) return;
@@ -11,7 +11,7 @@ export function MoveToNextClosedBracket() {
     ),
   );
   let nearestBracketIndex = Number.MAX_SAFE_INTEGER;
-  for (const bracket of brackets) {
+  for (const bracket of BRACKETS) {
     const index = text.indexOf(bracket.close);
     if (index === -1) continue; // bracket not found...
     if (index < nearestBracketIndex) nearestBracketIndex = index;

@@ -1,5 +1,5 @@
 import * as vscode from "vscode";
-import { brackets } from "../helpers/brackets";
+import { BRACKETS } from "../helpers/brackets";
 export function MoveToPrevOpenBracket() {
   const editor = vscode.window.activeTextEditor;
   if (!editor) return;
@@ -10,7 +10,7 @@ export function MoveToPrevOpenBracket() {
   );
   let nearestBracketIndex = -1;
 
-  for (const bracket of brackets) {
+  for (const bracket of BRACKETS) {
     let closingBracketFound = false;
     for (let i = cursorOffset - 1; i >= 0; i--) {
       if (text[i] === bracket.close) {
@@ -33,4 +33,6 @@ export function MoveToPrevOpenBracket() {
   editor.selection = new vscode.Selection(newPosition, newPosition);
 }
 
-//(())
+//(
+//(adfadf )
+//)
