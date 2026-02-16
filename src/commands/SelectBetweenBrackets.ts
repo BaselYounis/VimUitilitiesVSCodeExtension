@@ -2,7 +2,12 @@ import { Bracket, brackets } from "../helpers/brackets";
 import { log } from "../helpers/log";
 import * as vscode from "vscode";
 type BracketMatch = { bracket: Bracket; index: number };
-export function SelectBetweenBrackets(shouldDelete?: boolean) {
+type SelectionOptions = {
+  delete?: boolean;
+  cut?: boolean;
+  copy?: boolean;
+};
+export function SelectBetweenBrackets(options: SelectionOptions) {
   const editor = vscode.window.activeTextEditor;
   if (!editor) return;
   const cursorPosition = editor.selection.active;
@@ -34,7 +39,11 @@ export function SelectBetweenBrackets(shouldDelete?: boolean) {
   const nextPos = document.positionAt(lastNextMatch.index - 1);
   const prevPos = document.positionAt(lastPrevMatch.index + 1);
   editor.selection = new vscode.Selection(prevPos, nextPos);
-  if (shouldDelete === true)
+  const selectedText = document.getText(editor.selection);
+  if (options.copy === true || options.cut === true) {
+    vscode.env.clipboard.writeText(selectedText);
+  }
+  if (options.delete === true || options.cut === true)
     editor.edit((editBuilder) => {
       editBuilder.delete(editor.selection);
     });

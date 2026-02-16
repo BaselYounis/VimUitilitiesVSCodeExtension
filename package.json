@@ -28,6 +28,14 @@
       {
         "command": "baselcustomkeybinds.deleteBetweenBrackets",
         "title": "Delete Between Brackets"
+      },
+      {
+        "command": "baselcustomkeybinds.copyBetweenBrackets",
+        "title": "Copy Between Brackets"
+      },
+      {
+        "command": "baselcustomkeybinds.cutBetweenBrackets",
+        "title": "Cut Between Brackets"
       }
     ]
   },

@@ -21,11 +21,20 @@ export function activate(context: vscode.ExtensionContext) {
     },
     {
       id: "baselcustomkeybinds.selectBetweenBrackets",
-      handler: SelectBetweenBrackets,
+      handler: () =>
+        SelectBetweenBrackets({ delete: false, copy: false, cut: false }),
     },
     {
       id: "baselcustomkeybinds.deleteBetweenBrackets",
-      handler: ()=>SelectBetweenBrackets(true),
+      handler: () => SelectBetweenBrackets({ delete: true }),
+    },
+    {
+      id: "baselcustomkeybinds.copyBetweenBrackets",
+      handler: () => SelectBetweenBrackets({ copy: true }),
+    },
+    {
+      id: "baselcustomkeybinds.cutBetweenBrackets",
+      handler: () => SelectBetweenBrackets({ cut: true }),
     },
   ];
 
