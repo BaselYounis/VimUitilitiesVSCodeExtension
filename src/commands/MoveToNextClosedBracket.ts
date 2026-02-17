@@ -13,7 +13,7 @@ export function MoveToNextClosedBracket() {
   let nearestBracketIndex = Number.MAX_SAFE_INTEGER;
   for (const bracket of BRACKETS) {
     const index = text.indexOf(bracket.close);
-    if (index === -1) continue; // bracket not found...
+    if (index === -1) continue; // bracket not founds...ss
     if (index < nearestBracketIndex) nearestBracketIndex = index;
   }
   if (nearestBracketIndex === Number.MAX_SAFE_INTEGER) return;
@@ -21,4 +21,5 @@ export function MoveToNextClosedBracket() {
     editor.document.offsetAt(position) + nearestBracketIndex,
   );
   editor.selection = new vscode.Selection(newPosition, newPosition);
+
 }

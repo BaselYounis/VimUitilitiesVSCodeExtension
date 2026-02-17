@@ -31,6 +31,10 @@ export function MoveToPrevOpenBracket() {
       1,
   );
   editor.selection = new vscode.Selection(newPosition, newPosition);
+  editor.revealRange(
+    new vscode.Range(newPosition, newPosition),
+    vscode.TextEditorRevealType.InCenterIfOutsideViewport
+  );
 }
 
 //(

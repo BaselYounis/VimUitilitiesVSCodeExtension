@@ -24,4 +24,8 @@ export function MoveToNextOpenBracket() {
     editor.document.offsetAt(position) + nearestBracketIndex + 1,
   );
   editor.selection = new vscode.Selection(newPosition, newPosition);
+  editor.revealRange(
+    new vscode.Range(newPosition, newPosition),
+    vscode.TextEditorRevealType.InCenterIfOutsideViewport,
+  );
 }
