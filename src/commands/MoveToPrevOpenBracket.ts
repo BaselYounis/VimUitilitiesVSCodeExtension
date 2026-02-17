@@ -1,39 +1,31 @@
 import * as vscode from "vscode";
-import { BRACKETS } from "../helpers/brackets";
+import { BRACKET_OPENINGS, BRACKETS } from "../helpers/brackets";
 export function MoveToPrevOpenBracket() {
   const editor = vscode.window.activeTextEditor;
   if (!editor) return;
-  const position = editor.selection.active;
-  const cursorOffset = editor.document.offsetAt(position);
+  const cursorPosition = editor.selection.active;
+  const cursorOffset = editor.document.offsetAt(cursorPosition);
   const text = editor.document.getText(
-    new vscode.Range(editor.document.lineAt(0).range.start, position),
+    new vscode.Range(editor.document.lineAt(0).range.start, cursorPosition),
   );
-  let nearestBracketIndex = -1;
+  let bracketIndex = null;
+  let deltaChar = 0;
 
-  for (const bracket of BRACKETS) {
-    let closingBracketFound = false;
-    for (let i = cursorOffset - 1; i >= 0; i--) {
-      if (text[i] === bracket.close) {
-        closingBracketFound = true;
-        continue;
-      }
-      if (text[i] !== bracket.open) continue;
-      if (i > nearestBracketIndex && closingBracketFound) {
-        nearestBracketIndex = i;
-        break;
-      }
+  for (let i = cursorOffset - 2; i >= 0; i--) {
+    deltaChar += 1;
+    if (BRACKET_OPENINGS.includes(text[i])) {
+      bracketIndex = i;
+      break;
     }
   }
-  if (nearestBracketIndex === -1) return;
+  if (!bracketIndex) return;
   const newPosition = editor.document.positionAt(
-    editor.document.offsetAt(position) -
-      (text.length - nearestBracketIndex) +
-      1,
+    editor.document.offsetAt(cursorPosition) - deltaChar ,
   );
   editor.selection = new vscode.Selection(newPosition, newPosition);
   editor.revealRange(
     new vscode.Range(newPosition, newPosition),
-    vscode.TextEditorRevealType.InCenterIfOutsideViewport
+    vscode.TextEditorRevealType.InCenterIfOutsideViewport,
   );
 }
 
