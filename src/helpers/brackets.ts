@@ -6,9 +6,10 @@ export const BRACKETS: Bracket[] = [
   { open: "(", close: ")" },
   { open: "{", close: "}" },
   { open: "[", close: "]" },
+  { open: "<", close: ">" }, 
 ];
-export const BRACKET_OPENINGS = ["(", "{", "["];
-export const BRACKET_CLOSINGS = [")", "}", "]"];
+export const BRACKET_OPENINGS = ["(", "{", "[", "<"];
+export const BRACKET_CLOSINGS = [")", "}", "]", ">"];
 export function isValidBracketPair(
   openBracket: string,
   closingBracket: string,
